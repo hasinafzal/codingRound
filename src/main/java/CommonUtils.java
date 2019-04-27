@@ -16,7 +16,9 @@ public class CommonUtils {
 
 	public static WebDriver setDriverPath() {
 	    if (PlatformUtil.isMac()) {
-	        System.setProperty("webdriver.chrome.driver", "chromedriver");
+	    	
+			disablenotification();
+
 	    }
 	    if (PlatformUtil.isWindows()) {
 	    	
@@ -24,7 +26,9 @@ public class CommonUtils {
 			
 			}
 	    if (PlatformUtil.isLinux()) {
-	        System.setProperty("webdriver.chrome.driver", "chromedriver_linux");
+	    	
+			disablenotification();
+
 	    }
 	    return driver;
 	}

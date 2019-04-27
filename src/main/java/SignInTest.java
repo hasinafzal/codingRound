@@ -34,7 +34,6 @@ public class SignInTest {
 	@Test
     public void ifSignInDetailsAreMissing()
     {
-		launchBrowser();
 		driver.get("https://www.cleartrip.com/");
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
@@ -60,7 +59,6 @@ public class SignInTest {
 	}
 	public void launchBrowser()
 	{
-		//CommonUtils utils = new CommonUtils();
 		CommonUtils.setDriverPath();
 		this.driver = CommonUtils.driver;
 	}
