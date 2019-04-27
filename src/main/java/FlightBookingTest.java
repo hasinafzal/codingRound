@@ -1,7 +1,5 @@
 
 import org.testng.AssertJUnit;
-
-
 import com.sun.javafx.PlatformUtil;
 
 import org.junit.Before;
@@ -12,9 +10,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -25,38 +25,71 @@ import java.util.concurrent.TimeUnit;
 
 public class FlightBookingTest {
 	
-    static WebDriver driver ;
-   
+    WebDriver driver ;
     
+    @FindBy(id= "OneWay") 
+  	static WebElement onewayRadioButton;
+    
+    @FindBy(id= "FromTag") 
+  	static WebElement originLocation;
+    
+    @FindBy(id= "ui-id-1") 
+  	static WebElement autoCompleteListforOriginLocaion;
+    
+    @FindBy(id= "ToTag") 
+  	static WebElement destinationLocation;
+    
+    @FindBy(id= "ui-id-2") 
+  	static WebElement autoCompleteListforDestinationLocaion;
+    
+    @FindBy(xpath = "//*[@id='ui-datepicker-div']/div[2]/table/tbody/tr[1]/td[3]/a") 
+  	static WebElement dateSelector;
+    
+    @FindBy(id= "SearchBtn") 
+  	static WebElement SearchBtn;
+    
+    @BeforeTest
+    public void browserlaunch()
+    {
+      launchBrowser();
+      driver.get("https://www.cleartrip.com/");
+      
+    }
     @Test
     public void testThatResultsAppearForAOneWayJourney() {
-    	launchBrowser();
-        driver.get("https://www.cleartrip.com/");
+    	
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.findElement(By.id("OneWay")).click();
-        driver.findElement(By.id("FromTag")).clear();
-        driver.findElement(By.id("FromTag")).sendKeys("Bangalore");
+        PageFactory.initElements(driver, FlightBookingTest.class); 
+        
+        onewayRadioButton.click();
+        originLocation.clear();
+        originLocation.sendKeys("Bangalore");
 
-        WebElement el1=driver.findElement(By.id("ui-id-1"));
-		 List<WebElement> originOptions=el1.findElements(By.xpath("//*[starts-with(@id,'ui-id')]/li"));
+        List<WebElement> originOptions=autoCompleteListforOriginLocaion.findElements(By.xpath("//*[starts-with(@id,'ui-id')]/li"));
 		 originOptions.get(0).click();
 			
-        driver.findElement(By.id("ToTag")).clear();
-        driver.findElement(By.id("ToTag")).sendKeys("Delhi");
+		 destinationLocation.clear();
+		 destinationLocation.sendKeys("Delhi");
 
 
         //select the first item from the destination auto complete list
-        List<WebElement> destinationOptions = driver.findElement(By.id("ui-id-2")).findElements(By.tagName("li"));
+        List<WebElement> destinationOptions = autoCompleteListforDestinationLocaion.findElements(By.tagName("li"));
         destinationOptions.get(0).click();
+        
          //click on  may 1st
-        driver.findElement(By.xpath("//*[@id='ui-datepicker-div']/div[2]/table/tbody/tr[1]/td[3]/a")).click();
+        dateSelector.click();
+        
         //all fields filled in. Now click on search
-        driver.findElement(By.id("SearchBtn")).click();
+        SearchBtn.click();
 
         //verify that result appears for the provided journey search
         AssertJUnit.assertTrue(isElementPresent(By.className("searchSummary")));
 
-        //close the browser
+
+    }
+    @AfterTest
+    public void closeBrowser()
+    {
         driver.quit();
 
     }
@@ -72,7 +105,6 @@ public class FlightBookingTest {
 
    public void launchBrowser()
 	{
-		
 		CommonUtils.setDriverPath();
 		this.driver = CommonUtils.driver;
 	}
